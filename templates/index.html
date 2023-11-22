@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codeforces Ratings Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Codeforces Ratings Prediction</h1>
+
+    <form method="post">
+        <label for="username">Enter Codeforces Handle:</label>
+        <input type="text" name="username" required>
+        <br>
+        <label for="num_predictions">Number of Predictions:</label>
+        <input type="number" name="num_predictions" value="5" required>
+        <br>
+        <button type="submit">Predict Ratings</button>
+    </form>
+
+    {% if all_ratings %}
+    <div>
+    <canvas id="ratingChart" width="800" height="200"></canvas>
+    </div>
+
+    <script>
+        function generateArray(start, end) {
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        }
+
+        var ctx = document.getElementById('ratingChart').getContext('2d');
+        var num_predictions = {{num_predictions}};
+        var actualLength = {{ all_ratings|length - num_predictions }};
+
+// Convert the generators to lists
+var allRatingsList = {{ all_ratings|list }};
+var actualRatings = allRatingsList.slice(0, actualLength);
+var predictedRatings = allRatingsList.slice(actualLength);
+
+// Define colors for actual and predicted ratings
+var actualColor = 'blue';
+var predictedColor = 'red';
+
+// Create the data object for the chart
+var contestNumbers = Array.from({ length: actualLength }, (_, i) => i + 1);
+var predictedContestNumbers = Array.from({ length: num_predictions }, (_, i) => actualLength + i + 1);
+
+var chartData = {
+  labels: [...contestNumbers, ...predictedContestNumbers],
+  datasets: [
+    {
+      label: 'Actual Ratings',
+      data: actualRatings,
+      borderColor: actualColor,
+      backgroundColor: actualColor,
+      fill: false,
+    },
+    {
+      label: 'Predicted Ratings',
+      data: [...actualRatings, ...predictedRatings],
+      borderColor: predictedColor,
+      backgroundColor: predictedColor,
+      fill: false,
+    },
+  ],
+};
+
+// Create the chart
+var ratingChart = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+});
+    </script>
+    {% endif %}
+</body>
+
+</html>
