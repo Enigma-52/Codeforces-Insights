@@ -1,2 +1,41 @@
-# Codeforces-Rating-Predictor
-A Chrome extension leveraging the Codeforces API and the Prophet library for time series forecasting, enhancing users' Codeforces profile pages with a personalized layout and a dynamic graph predicting their rating in the next 'x' contests.
+# Codeforces Rating Predictor (Work in Progress)
+
+Enhance your Codeforces experience with this Chrome extension that predicts your rating in upcoming contests and adds a personalized touch to your profile page.
+
+## Features
+
+- **Rating Prediction Graph:** Dynamic graph displaying your predicted rating in the next contests.
+
+- **Profile Page Enhancement:** Improved layout for a more personalized experience.
+
+## Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/Enigma-52/codeforces-profile-enhancer.git
+    ```
+
+2. Open Chrome and go to `chrome://extensions/`.
+
+3. Enable "Developer mode" in the top right corner.
+
+4. Click on "Load unpacked" and select the cloned repository folder.
+
+## Usage
+
+1. Visit the Codeforces website (https://codeforces.com/) and log in to your account.
+
+2. Open your profile page.
+
+3. The extension will automatically enhance your profile page, adding the rating prediction graph.
+
+4. Customize the prediction settings as per your preferences.
+
+## Dependencies:
+
+- **Prophet by Meta**: A time series forecasting library.
+- **Flask:** A lightweight web application framework.
+- **pandas:** A data manipulation and analysis library.
+- **numpy:** A library for numerical operations in Python.
+- **requests:** A library for making HTTP requests in Python.
