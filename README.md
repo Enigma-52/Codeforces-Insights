@@ -2,6 +2,8 @@
 
 Enhance your Codeforces experience with this Chrome extension that predicts your rating in upcoming contests and adds a personalized touch to your profile page.
 
+![224E4B2A-BD10-49DA-B605-67720ACA37A2](https://github.com/Enigma-52/Codeforces-Rating-Predictor/assets/95529619/7dc21096-7ad8-4251-827a-02f406bf9b46)
+
 ## Features
 
 - **Rating Prediction Graph:** Dynamic graph displaying your predicted rating in the next contests.
