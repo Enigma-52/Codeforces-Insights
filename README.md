@@ -10,6 +10,9 @@ Enhance your Codeforces experience with this Chrome extension that predicts your
 
 - **Profile Page Enhancement:** Improved layout for a more personalized experience.
 
+Check out the [Codeforces Rating Predictor]([https://www.example.com/](https://cf-predict.onrender.com/)) to predict your future ratings!
+
+
 ## Installation
 
 1. Clone the repository:
