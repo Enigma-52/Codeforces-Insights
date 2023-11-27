@@ -5,26 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Codeforces Ratings Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-    <h1>Codeforces Ratings Prediction</h1>
+    <div class="container">
+        <header>
+            <h1>Codeforces Ratings Predictor</h1>
+        </header>
 
-    <form method="post">
-        <label for="username">Enter Codeforces Handle:</label>
-        <input type="text" name="username" required>
-        <br>
-        <label for="num_predictions">Number of Predictions:</label>
-        <input type="number" name="num_predictions" value="5" required>
-        <br>
-        <button type="submit">Predict Ratings</button>
-    </form>
+        <section class="prediction-form">
+            <form method="post">
+                <label for="username">Enter Codeforces Handle:</label>
+                <input type="text" name="username" required>
+                <br>
+                <label for="num_predictions">Number of Predictions:</label>
+                <input type="number" name="num_predictions" value="5" required>
+                <br>
+                <button type="submit">Predict Ratings</button>
+            </form>
+        </section>
 
-    {% if all_ratings %}
-    <div>
-    <canvas id="ratingChart" width="800" height="200"></canvas>
-    </div>
+        {% if all_ratings %}
+        <section class="chart-section">
+            <canvas id="ratingChart" width="800" height="200"></canvas>
+        </section>
 
     <script>
         function generateArray(start, end) {
@@ -67,6 +73,8 @@ var chartData = {
     },
   ],
 };
+
+
 
 // Create the chart
 var ratingChart = new Chart(ctx, {
