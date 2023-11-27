@@ -4,7 +4,8 @@ from prophet import Prophet
 import numpy as np
 import requests
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_url_path="/static")
 
 
 def get_user_ratings(handle):
@@ -21,6 +22,20 @@ def get_user_ratings(handle):
         return None
 
 
+def get_user_ranks(handle):
+    url = f"https://codeforces.com/api/user.rating?handle={handle}"
+    response = requests.get(url)
+    data = response.json()
+
+    if "result" in data:
+        ratings_data = data["result"]
+        # Use the newRating data for predictions
+        ratings = [entry["rank"] for entry in ratings_data]
+        return ratings
+    else:
+        return None
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -30,6 +45,7 @@ def index():
 
         # Get user ratings from Codeforces API
         user_ratings = get_user_ratings(username)
+        user_ranks = get_user_ranks(username)
 
         if user_ratings:
             # Create a new DataFrame with the user's ratings
@@ -60,8 +76,12 @@ def index():
             all_ratings = user_ratings + predicted_ratings
 
             # Render the template with data
+            all_ratings = [int(x) for x in all_ratings]
             return render_template(
-                "index.html", num_predictions=num_predictions, all_ratings=all_ratings
+                "index.html",
+                num_predictions=num_predictions,
+                all_ratings=all_ratings,
+                user_ranks=user_ranks,
             )
 
     # Render the template without data if it's a GET request
