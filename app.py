@@ -36,8 +36,31 @@ def get_user_ranks(handle):
         return None
 
 
+def get_language_data(handle):
+    api_url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(api_url)
+    json_data = response.json()
+    json_data = json_data["result"]
+
+    lang_data = [entry["programmingLanguage"] for entry in json_data]
+    language_count = {}
+    for language in lang_data:
+        if language in language_count:
+            language_count[language] += 1
+        else:
+            language_count[language] = 1
+
+    # Convert the language counts to a list of lists
+    langData = [["Language", "Count"]] + [
+        [lang, count] for lang, count in language_count.items()
+    ]
+
+    return langData
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
+    langData = []
     if request.method == "POST":
         # Get username and number of predictions from the form
         username = request.form["username"]
@@ -46,9 +69,11 @@ def index():
         # Get user ratings from Codeforces API
         user_ratings = get_user_ratings(username)
         user_ranks = get_user_ranks(username)
+        langData = get_language_data(username)
 
         if user_ratings:
             # Create a new DataFrame with the user's ratings
+
             user_df = pd.DataFrame(
                 {
                     "ds": pd.date_range(
@@ -82,10 +107,14 @@ def index():
                 num_predictions=num_predictions,
                 all_ratings=all_ratings,
                 user_ranks=user_ranks,
+                langData=langData,
             )
 
     # Render the template without data if it's a GET request
-    return render_template("index.html", all_ratings=[])
+    return render_template(
+        "index.html",
+        all_ratings=[],
+    )
 
 
 if __name__ == "__main__":
