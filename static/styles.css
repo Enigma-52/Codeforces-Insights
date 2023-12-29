@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
@@ -52,4 +52,12 @@ button:hover {
 
 .chart-section {
     text-align: center;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-item {
+    margin-right: 10px; 
 }

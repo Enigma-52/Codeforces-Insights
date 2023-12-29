@@ -36,6 +36,43 @@ def get_user_ranks(handle):
         return None
 
 
+def get_submission_data(handle):
+    api_url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(api_url)
+    json_data = response.json()
+    json_data = json_data["result"]
+
+    verdict_data = [entry["verdict"] for entry in json_data]
+    verdict_count = {}
+    for verdict in verdict_data:
+        if verdict in verdict_count:
+            verdict_count[verdict] += 1
+        else:
+            verdict_count[verdict] = 1
+
+    verdictData = [["Verdict", "Count"]] + [
+        [verdict, count] for verdict, count in verdict_count.items()
+    ]
+
+    for item in verdictData:
+        if "TIME_LIMIT_EXCEEDED" in item:
+            item[item.index("TIME_LIMIT_EXCEEDED")] = "TLE"
+        if "WRONG_ANSWER" in item:
+            item[item.index("WRONG_ANSWER")] = "WA"
+        if "MEMORY_LIMIT_EXCEEDED" in item:
+            item[item.index("MEMORY_LIMIT_EXCEEDED")] = "MLE"
+        if "OK" in item:
+            item[item.index("OK")] = "AC"
+        if "COMPILATION_ERROR" in item:
+            item[item.index("COMPILATION_ERROR")] = "CE"
+        if "RUNTIME_ERROR" in item:
+            item[item.index("RUNTIME_ERROR")] = "RE"
+
+    verdictData = [item for item in verdictData if "SKIPPED" not in item]
+
+    return verdictData
+
+
 def get_language_data(handle):
     api_url = f"https://codeforces.com/api/user.status?handle={handle}"
     response = requests.get(api_url)
@@ -64,12 +101,13 @@ def index():
     if request.method == "POST":
         # Get username and number of predictions from the form
         username = request.form["username"]
-        num_predictions = int(request.form["num_predictions"])
+        num_predictions = 5
 
         # Get user ratings from Codeforces API
         user_ratings = get_user_ratings(username)
         user_ranks = get_user_ranks(username)
         langData = get_language_data(username)
+        verdictData = get_submission_data(username)
 
         if user_ratings:
             # Create a new DataFrame with the user's ratings
@@ -104,10 +142,10 @@ def index():
             all_ratings = [int(x) for x in all_ratings]
             return render_template(
                 "index.html",
-                num_predictions=num_predictions,
                 all_ratings=all_ratings,
                 user_ranks=user_ranks,
                 langData=langData,
+                verdictData=verdictData,
             )
 
     # Render the template without data if it's a GET request

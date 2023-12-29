@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codeforces Ratings Prediction</title>
+    <title>Codeforces Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='language.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='piechart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='predictor.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Codeforces Ratings Predictor</h1>
+            <h1>Codeforces Insights</h1>
         </header>
 
         <section class="prediction-form">
@@ -24,28 +24,35 @@
                 <label for="username">Enter Codeforces Handle:</label>
                 <input type="text" name="username" required>
                 <br>
-                <label for="num_predictions">Number of Predictions:</label>
-                <input type="number" name="num_predictions" value="5" required>
-                <br>
                 <button type="submit">Predict Ratings</button>
             </form>
         </section>
 
         {% if all_ratings %}
         <section class="chart-section">
-            <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+            <div class="flex-container">
+                <div id="submissionChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightblue;"></div>
+                <div id="langChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightcoral;"></div>
+            </div>
+            <h3>Rating Prediction</h3>
             <canvas id="ratingChart" width="800" height="200"></canvas>
         </section>
 
     <script>
+        
       //Language-
        var lang_data = {{ langData | tojson | safe }};
-       languagepiechart(lang_data);
+       languagepiechart(lang_data,"langChart");
+
+       //Submission-
+       var verdict_data = {{ verdictData | tojson | safe }};
+       languagepiechart(verdict_data,"submissionChart");
+
       // Prediction-
-      var num_predictions = {{num_predictions}};
-      var actualLength = {{ all_ratings|length - num_predictions }};
+      var num_predictions = 5;
+      var actualLength = {{ all_ratings|length - 5 }};
       var allRatingsList = {{ all_ratings|list }};
-      prediction(allRatingsList,actualLength,num_predictions)
+      prediction(allRatingsList,actualLength,5)
 
 
     </script>
