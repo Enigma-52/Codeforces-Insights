@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Codeforces Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='barchart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='piechart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='predictor.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,12 +32,16 @@
 
         {% if all_ratings %}
         <section class="chart-section">
+            <h3>Rating Prediction</h3>
+            <canvas id="ratingChart" width="800" height="200"></canvas>
             <div class="flex-container">
                 <div id="submissionChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightblue;"></div>
                 <div id="langChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightcoral;"></div>
             </div>
-            <h3>Rating Prediction</h3>
-            <canvas id="ratingChart" width="800" height="200"></canvas>
+            <h3>Problem Ratings</h3>
+            <div id="ratingbar" style="width: 1200px; height: 600px;"></div>
+            <h3>Problem Levels</h3>
+            <div id="levelbar" style="width: 1200px; height: 600px;"></div>
         </section>
 
     <script>
@@ -47,6 +53,15 @@
        //Submission-
        var verdict_data = {{ verdictData | tojson | safe }};
        languagepiechart(verdict_data,"submissionChart");
+
+        //Rating-
+        var rating_data = {{ ratingData | tojson | safe }};
+       ratingbarchart(rating_data,"ratingbar");
+
+
+        //Levels-
+        var problem_data = {{ problemData | tojson | safe }};
+       ratingbarchart(problem_data,"levelbar");
 
       // Prediction-
       var num_predictions = 5;

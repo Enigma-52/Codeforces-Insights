@@ -3,7 +3,7 @@ import pandas as pd
 from prophet import Prophet
 import numpy as np
 import requests
-
+from collections import Counter
 
 app = Flask(__name__, static_url_path="/static")
 
@@ -95,6 +95,67 @@ def get_language_data(handle):
     return langData
 
 
+def get_ratings_data(handle):
+    api_url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(api_url)
+    json_data = response.json()
+    json_data = json_data["result"]
+
+    # Extract the ratings from the JSON data, excluding None values
+    ratings = [
+        entry["problem"].get("rating")
+        for entry in json_data
+        if entry["problem"].get("rating") is not None
+    ]
+
+    # Count occurrences of each rating using Counter
+    rating_count = Counter(ratings)
+
+    # Create a list for the final output, excluding entries with None values
+    ratingData = [[rating, count] for rating, count in rating_count.items()]
+
+    ratingData = sorted(ratingData)
+    ratingData = [["Rating", "Count"]] + ratingData
+    return ratingData
+
+
+def get_problems_data(handle):
+    api_url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(api_url)
+    json_data = response.json()
+    json_data = json_data["result"]
+
+    # Extract the ratings from the JSON data, excluding None values
+    ratings = [
+        entry["problem"].get("index")
+        for entry in json_data
+        if entry["problem"].get("index") is not None
+    ]
+
+    # Count occurrences of each rating using Counter
+    rating_count = Counter(ratings)
+
+    # Create a list for the final output, excluding entries with None values
+    ratingData = [
+        [rating, count] for rating, count in rating_count.items() if rating is not None
+    ]
+
+    merged_data = {}
+    for rating, count in ratingData:
+        prefix = rating.rstrip("1234567890")  # Extract the non-numeric prefix
+        merged_data.setdefault(prefix, 0)
+        merged_data[prefix] += count
+
+    # Create the final output list
+    final_rating_data = [[key, value] for key, value in merged_data.items()]
+
+    # Sort the final output list
+    final_rating_data = sorted(final_rating_data)
+    final_rating_data = [["Problem", "Count"]] + final_rating_data
+
+    return final_rating_data
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     langData = []
@@ -108,8 +169,10 @@ def index():
         user_ranks = get_user_ranks(username)
         langData = get_language_data(username)
         verdictData = get_submission_data(username)
+        ratingData = get_ratings_data(username)
+        problemData = get_problems_data(username)
 
-        if user_ratings:
+        if True:
             # Create a new DataFrame with the user's ratings
 
             user_df = pd.DataFrame(
@@ -146,6 +209,8 @@ def index():
                 user_ranks=user_ranks,
                 langData=langData,
                 verdictData=verdictData,
+                ratingData=ratingData,
+                problemData=problemData,
             )
 
     # Render the template without data if it's a GET request
