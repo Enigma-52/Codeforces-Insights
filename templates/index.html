@@ -7,6 +7,7 @@
     <title>Codeforces Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='heatmap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='blog.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='barchart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='piechart.js') }}"></script>
@@ -60,10 +61,27 @@
                 {% endfor %}
             </table>
             <button onclick="excerpt()" id="showMore">Show More/Less</button>
+            <div style="text-align: center;">
+                <h1>Codeforces Submissions Calendar</h1>
+            
+                <!-- Input area for max submissions -->
+                <label for="maxSubmissions">Max Submissions:</label>
+                <input type="number" id="maxSubmissions" placeholder="Enter max submissions" value="5">
+                <button id="submitMaxSubmissions">Submit</button>
+            
+                <div>
+                    <div id="calendar_basic" style="width: 1200px; padding-left: 130px;"></div>
+                </div>
+            </div>
+            
+            
         </section>
 
     <script>
-        
+        //Heatmap
+        var submissions_data = {{ submissionData | tojson | safe }};
+       heatmap(submissions_data,"calendar_basic");
+
       //Language-
        var lang_data = {{ langData | tojson | safe }};
        languagepiechart(lang_data,"langChart");

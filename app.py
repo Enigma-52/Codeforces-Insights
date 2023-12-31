@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request
 import pandas as pd
-from prophet import Prophet
 import numpy as np
 import requests
+from prophet import Prophet
 from collections import Counter
+from datetime import datetime
+from collections import defaultdict
 
 app = Flask(__name__, static_url_path="/static")
 
@@ -163,6 +165,22 @@ def get_blog_entries(handle):
     return data.get("result", [])
 
 
+def get_codeforces_submissions(handle):
+    url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(url)
+    data = response.json()
+    data = data["result"]
+
+    calendar_data = defaultdict(int)
+
+    for submission in data:
+        timestamp = submission["creationTimeSeconds"]
+        date = datetime.utcfromtimestamp(timestamp).date()
+        calendar_data[str(date)] += 1  # Convert date to string
+
+    return calendar_data
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     langData = []
@@ -179,6 +197,7 @@ def index():
         ratingData = get_ratings_data(username)
         problemData = get_problems_data(username)
         blog_entries = get_blog_entries(username)
+        submissionData = get_codeforces_submissions(username)
 
         if True:
             # Create a new DataFrame with the user's ratings
@@ -220,6 +239,7 @@ def index():
                 ratingData=ratingData,
                 problemData=problemData,
                 blog_entries=blog_entries,
+                submissionData=submissionData,
             )
 
     # Render the template without data if it's a GET request
