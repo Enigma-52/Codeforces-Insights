@@ -61,3 +61,40 @@ button:hover {
 .flex-item {
     margin-right: 10px; 
 }
+
+tr.hidden {display: none;}
+
+table {
+    width: 1200px; /* Set fixed width */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #007bff; /* Set color to blue */
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+h1 {
+    color: #007bff;
+}
+
+.hidden {
+    display: none;
+}
+
+#viewMore, #collapse {
+    cursor: pointer;    
+    color: #007bff;
+    margin-bottom: 10px;
+    display: inline-block;
+}

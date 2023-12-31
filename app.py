@@ -156,6 +156,13 @@ def get_problems_data(handle):
     return final_rating_data
 
 
+def get_blog_entries(handle):
+    url = f"https://codeforces.com/api/user.blogEntries?handle={handle}"
+    response = requests.get(url)
+    data = response.json()
+    return data.get("result", [])
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     langData = []
@@ -171,6 +178,7 @@ def index():
         verdictData = get_submission_data(username)
         ratingData = get_ratings_data(username)
         problemData = get_problems_data(username)
+        blog_entries = get_blog_entries(username)
 
         if True:
             # Create a new DataFrame with the user's ratings
@@ -211,6 +219,7 @@ def index():
                 verdictData=verdictData,
                 ratingData=ratingData,
                 problemData=problemData,
+                blog_entries=blog_entries,
             )
 
     # Render the template without data if it's a GET request

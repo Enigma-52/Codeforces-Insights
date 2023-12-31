@@ -7,6 +7,7 @@
     <title>Codeforces Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='blog.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='barchart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='piechart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='predictor.js') }}"></script>
@@ -42,6 +43,23 @@
             <div id="ratingbar" style="width: 1200px; height: 600px;"></div>
             <h3>Problem Levels</h3>
             <div id="levelbar" style="width: 1200px; height: 600px;"></div>
+            <table id="myTable">
+                <tr>
+                    <th>Title</th>
+                    <th>Rating</th>
+                    <th>Tags</th>
+                    <th>Link</th>
+                </tr>
+                {% for entry in blog_entries %}
+                    <tr class="{% if loop.index > 5 %}hidden{% endif %}">
+                        <td>{{ entry.title | striptags }}</td>
+                        <td>{{ entry.rating }}</td>
+                        <td>{{ entry.tags | join(', ') }}</td>
+                        <td><a href="https://codeforces.com/blog/entry/{{ entry.id }}" target="_blank">Read More</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <button onclick="excerpt()" id="showMore">Show More/Less</button>
         </section>
 
     <script>
