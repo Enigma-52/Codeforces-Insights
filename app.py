@@ -127,14 +127,14 @@ def get_problems_data(handle):
     json_data = response.json()
     json_data = json_data["result"]
 
-    # Extract the ratings from the JSON data, excluding None values
+    # Extract the ratings from the JSON data, excluding None values  
     ratings = [
         entry["problem"].get("index")
         for entry in json_data
         if entry["problem"].get("index") is not None
     ]
 
-    # Count occurrences of each rating using Counter
+    # Count occurrences of each rating of user using Counter
     rating_count = Counter(ratings)
 
     # Create a list for the final output, excluding entries with None values
