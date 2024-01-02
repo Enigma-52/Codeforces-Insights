@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
     <script type="text/javascript" src="{{ url_for('static', filename='donutchart.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='stats.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='heatmap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='blog.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='barchart.js') }}"></script>
@@ -44,6 +45,33 @@
             <h2 style="text-align: center;">Problem Tags Solved</h2>
             <div style="text-align: center; padding-left: 150px;">
                 <div id="tagchart" style="width: 900px; height: 500px;"></div>
+            </div>
+            <div class="flex-container" style="padding-bottom: 50px;">
+                <table class="flex-item" id="myTable" style="width: 600px; border-collapse: collapse; border: 2px solid #ddd;">
+                    <thead>
+                      <tr>
+                        <th style="width: 400px; padding: 15px; text-align: left; border-bottom: 1px solid #ddd; background-color: #007bff; color: white;">User Stats</th>
+                        <th style="width: 200px; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; background-color: #007bff; color: white;">Values</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- No initial rows in the HTML -->
+                    </tbody>
+                  </table>
+                
+                  <!-- Second Table -->
+                  <table class="flex-item" id="secondTable" style="width: 600px; border-collapse: collapse; border: 2px solid #ddd;">
+                    <thead>
+                      <tr>
+                        <th style="width: 400px; padding: 15px; text-align: left; border-bottom: 1px solid #ddd; background-color: #007bff; color: white;">Contest stats</th>
+                        <th style="width: 200px; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; background-color: #007bff; color: white;">Values</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <!-- No initial rows in the HTML -->
+                    </tbody>
+                  </table>
+
             </div>
             <h3>Problem Ratings</h3>
             <div id="ratingbar" style="width: 1200px; height: 600px;"></div>
@@ -89,6 +117,16 @@
         </section>
 
     <script>
+        //User stats 
+        var user_head=["Total Problems Tried" , "Problems Solved" , "Accuracy" , "Unsolved","Total Computation Time spent","Total Memory used in execution"];
+        var user_stats_data = {{ user_stats | tojson | safe }};
+        stats(user_stats_data,user_head,"myTable");
+
+        //Contest stats
+        var contest_head=["Number of Contests" , "Best Rank in a Contest" , "Worst Rank in a Contest" , "Maximum increase in Rating","Maximum decrease in Rating"];
+        var contest_stats_data = {{ contest_stats | tojson | safe }};
+        stats(contest_stats_data,contest_head,"secondTable");
+
         //Tags
         var tags_data = {{ tags_list | tojson | safe }};
         tagdonutchart(tags_data,"tagchart");

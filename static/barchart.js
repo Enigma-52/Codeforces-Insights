@@ -1,5 +1,5 @@
-function ratingbarchart(rating_data, id){
-    const headers = rating_data[0];
+function ratingbarchart(rating_data, id) {
+  const headers = rating_data[0];
   const rows = rating_data.slice(1);
 
   // Extracting the Rating and Count lists
@@ -13,7 +13,18 @@ function ratingbarchart(rating_data, id){
       type: 'bar'
     }
   ];
-  
-  Plotly.newPlot(id, data);
-  
+
+  var layout = {
+    xaxis: {
+      ticktext: ratingList,
+      title: 'Rating',
+      showticklabels: true,
+      type: 'category',
+    },
+    yaxis: {
+      title: 'Count'
+    }
+  };
+
+  Plotly.newPlot(id, data, layout);
 }

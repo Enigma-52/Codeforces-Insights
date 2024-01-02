@@ -127,7 +127,7 @@ def get_problems_data(handle):
     json_data = response.json()
     json_data = json_data["result"]
 
-    # Extract the ratings from the JSON data, excluding None values  
+    # Extract the ratings from the JSON data, excluding None values
     ratings = [
         entry["problem"].get("index")
         for entry in json_data
@@ -198,6 +198,86 @@ def get_user_tags(handle):
     return tags_list
 
 
+def get_user_stats(handle):
+    url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(url)
+    response = response.json()
+
+    unique_problem_names = set()
+    successful_attempts = set()
+
+    total_attempts = len(response["result"])
+
+    for submission in response["result"]:
+        problem_name = submission["problem"]["name"]
+        unique_problem_names.add(problem_name)
+
+        if submission["verdict"] == "OK":
+            successful_attempts.add(problem_name)
+
+    total_tried = len(unique_problem_names)
+    successful_attempts_count = len(successful_attempts)
+    unsolved = total_tried - successful_attempts_count
+    accuracy = successful_attempts_count / total_attempts if total_attempts > 0 else 0
+    total_time_spent = sum(
+        submission["timeConsumedMillis"] for submission in response["result"]
+    )
+    total_memory_consumed = sum(
+        submission["memoryConsumedBytes"] for submission in response["result"]
+    )
+
+    # Convert time to minutes
+    total_time_spent_minutes = total_time_spent / (1000 * 60)
+
+    # Convert memory to megabytes
+    total_memory_consumed_mb = total_memory_consumed / (1024 * 1024 * 1024)
+
+    result_list = [
+        str(total_tried),
+        str(successful_attempts_count),
+        f"{accuracy * 100:.2f}%",
+        str(unsolved),
+        f"{total_time_spent_minutes:.2f} minutes",
+        f"{total_memory_consumed_mb:.2f} GB",
+    ]
+
+    return result_list
+
+
+def get_contest_stats(handle):
+    api_url = f"https://codeforces.com/api/user.rating?handle={handle}"
+
+    # Make API call and get JSON response
+    response = requests.get(api_url)
+    data = response.json()
+
+    # Check if the API call was successful
+    contests = data["result"]
+
+    unique_contests = len(contests)
+
+    # Extract other required stats
+    best_rank = min(contest["rank"] for contest in contests)
+    worst_rank = max(contest["rank"] for contest in contests)
+    max_increase_in_rating = max(
+        contest["newRating"] - contest["oldRating"] for contest in contests
+    )
+    max_decrease_in_rating = min(
+        contest["newRating"] - contest["oldRating"] for contest in contests
+    )
+
+    # Compile the stats into a list
+    result_list = [
+        unique_contests,
+        best_rank,
+        worst_rank,
+        max_increase_in_rating,
+        max_decrease_in_rating,
+    ]
+
+    return result_list
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     langData = []
@@ -216,6 +296,8 @@ def index():
         blog_entries = get_blog_entries(username)
         submissionData = get_codeforces_submissions(username)
         tags_list = get_user_tags(username)
+        user_stats = get_user_stats(username)
+        contest_stats = get_contest_stats(username)
 
         if True:
             # Create a new DataFrame with the user's ratings
@@ -259,6 +341,8 @@ def index():
                 blog_entries=blog_entries,
                 submissionData=submissionData,
                 tags_list=tags_list,
+                user_stats=user_stats,
+                contest_stats=contest_stats,
             )
 
     # Render the template without data if it's a GET request
