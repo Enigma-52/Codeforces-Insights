@@ -7,6 +7,7 @@
     <title>Codeforces Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='donutchart.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='heatmap.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='blog.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='barchart.js') }}"></script>
@@ -40,29 +41,39 @@
                 <div id="submissionChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightblue;"></div>
                 <div id="langChart" class="flex-item" style="width: 900px; height: 500px; background-color: lightcoral;"></div>
             </div>
+            <h2 style="text-align: center;">Problem Tags Solved</h2>
+            <div style="text-align: center; padding-left: 150px;">
+                <div id="tagchart" style="width: 900px; height: 500px;"></div>
+            </div>
             <h3>Problem Ratings</h3>
             <div id="ratingbar" style="width: 1200px; height: 600px;"></div>
             <h3>Problem Levels</h3>
             <div id="levelbar" style="width: 1200px; height: 600px;"></div>
-            <table id="myTable">
-                <tr>
-                    <th>Title</th>
-                    <th>Rating</th>
-                    <th>Tags</th>
-                    <th>Link</th>
-                </tr>
-                {% for entry in blog_entries %}
-                    <tr class="{% if loop.index > 5 %}hidden{% endif %}">
-                        <td>{{ entry.title | striptags }}</td>
-                        <td>{{ entry.rating }}</td>
-                        <td>{{ entry.tags | join(', ') }}</td>
-                        <td><a href="https://codeforces.com/blog/entry/{{ entry.id }}" target="_blank">Read More</a></td>
+            <h2 style="text-align: center;">Blog Entries</h2>
+            {% if blog_entries %}
+                <table id="myTable">
+                    <tr>
+                        <th>Title</th>
+                        <th>Rating</th>
+                        <th>Tags</th>
+                        <th>Link</th>
                     </tr>
-                {% endfor %}
-            </table>
-            <button onclick="excerpt()" id="showMore">Show More/Less</button>
-            <div style="text-align: center;">
-                <h1>Codeforces Submissions Calendar</h1>
+                    {% for entry in blog_entries %}
+                        <tr class="{% if loop.index > 5 %}hidden{% endif %}">
+                            <td>{{ entry.title | striptags }}</td>
+                            <td>{{ entry.rating }}</td>
+                            <td>{{ entry.tags | join(', ') }}</td>
+                            <td><a href="https://codeforces.com/blog/entry/{{ entry.id }}" target="_blank">Read More</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <button onclick="excerpt()" id="showMore">Show More/Less</button>
+            {% else %}
+                <h3>No Codeforces Blogs found for the user</h3>
+            {% endif %}
+            
+            <div style="text-align: center; padding-top: 25px;">
+                <h1 style="color: #000;">Codeforces Submissions Calendar</h1>
             
                 <!-- Input area for max submissions -->
                 <label for="maxSubmissions">Max Submissions:</label>
@@ -78,6 +89,10 @@
         </section>
 
     <script>
+        //Tags
+        var tags_data = {{ tags_list | tojson | safe }};
+        tagdonutchart(tags_data,"tagchart");
+
         //Heatmap
         var submissions_data = {{ submissionData | tojson | safe }};
        heatmap(submissions_data,"calendar_basic");

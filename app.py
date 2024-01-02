@@ -181,6 +181,23 @@ def get_codeforces_submissions(handle):
     return calendar_data
 
 
+def get_user_tags(handle):
+    url = f"https://codeforces.com/api/user.status?handle={handle}"
+    response = requests.get(url)
+    response = response.json()
+    result = response.get("result", [])
+    tags_count = {}
+
+    for submission in result:
+        problem = submission.get("problem", {})
+        tags = problem.get("tags", [])
+        for tag in tags:
+            tags_count[tag] = tags_count.get(tag, 0) + 1
+    tags_list = [[tag, count] for tag, count in tags_count.items()]
+
+    return tags_list
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     langData = []
@@ -198,6 +215,7 @@ def index():
         problemData = get_problems_data(username)
         blog_entries = get_blog_entries(username)
         submissionData = get_codeforces_submissions(username)
+        tags_list = get_user_tags(username)
 
         if True:
             # Create a new DataFrame with the user's ratings
@@ -240,6 +258,7 @@ def index():
                 problemData=problemData,
                 blog_entries=blog_entries,
                 submissionData=submissionData,
+                tags_list=tags_list,
             )
 
     # Render the template without data if it's a GET request
