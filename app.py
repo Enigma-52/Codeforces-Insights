@@ -21,7 +21,7 @@ def get_user_ratings(handle):
         ratings = [entry["newRating"] for entry in ratings_data]
         return ratings
     else:
-        return None
+        return []
 
 
 def get_user_ranks(handle):
@@ -35,7 +35,7 @@ def get_user_ranks(handle):
         ratings = [entry["rank"] for entry in ratings_data]
         return ratings
     else:
-        return None
+        return []
 
 
 def get_submission_data(handle):
@@ -190,7 +190,7 @@ def get_user_tags(handle):
     url = f"https://codeforces.com/api/user.status?handle={handle}"
     response = requests.get(url)
     response = response.json()
-    result = response.get("result", [])
+    result = response["result"]
     tags_count = {}
 
     for submission in result:
