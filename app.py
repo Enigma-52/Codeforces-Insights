@@ -161,8 +161,13 @@ def get_problems_data(handle):
 def get_blog_entries(handle):
     url = f"https://codeforces.com/api/user.blogEntries?handle={handle}"
     response = requests.get(url)
-    data = response.json()
-    return data.get("result", [])
+
+    if response.status_code == 200:
+        data = response.json()
+        return data.get("result", [])
+    else:
+        print(f"Error: {response.status_code}")
+        return []
 
 
 def get_codeforces_submissions(handle):
