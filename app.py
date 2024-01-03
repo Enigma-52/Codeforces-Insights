@@ -12,8 +12,14 @@ app = Flask(__name__, static_url_path="/static")
 
 def get_user_ratings(handle):
     url = f"https://codeforces.com/api/user.rating?handle={handle}"
-    response = requests.get(url)
-    data = response.json()
+
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    data = response
 
     if "result" in data:
         ratings_data = data["result"]
@@ -26,8 +32,14 @@ def get_user_ratings(handle):
 
 def get_user_ranks(handle):
     url = f"https://codeforces.com/api/user.rating?handle={handle}"
-    response = requests.get(url)
-    data = response.json()
+
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    data = response
 
     if "result" in data:
         ratings_data = data["result"]
@@ -40,9 +52,13 @@ def get_user_ranks(handle):
 
 def get_submission_data(handle):
     api_url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(api_url)
-    json_data = response.json()
-    json_data = json_data["result"]
+    response = []
+    while True:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    json_data = response["result"]
 
     verdict_data = [entry["verdict"] for entry in json_data]
     verdict_count = {}
@@ -77,9 +93,13 @@ def get_submission_data(handle):
 
 def get_language_data(handle):
     api_url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(api_url)
-    json_data = response.json()
-    json_data = json_data["result"]
+    response = []
+    while True:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    json_data = response["result"]
 
     lang_data = [entry["programmingLanguage"] for entry in json_data]
     language_count = {}
@@ -99,9 +119,13 @@ def get_language_data(handle):
 
 def get_ratings_data(handle):
     api_url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(api_url)
-    json_data = response.json()
-    json_data = json_data["result"]
+    response = []
+    while True:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    json_data = response["result"]
 
     # Extract the ratings from the JSON data, excluding None values
     ratings = [
@@ -123,9 +147,14 @@ def get_ratings_data(handle):
 
 def get_problems_data(handle):
     api_url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(api_url)
-    json_data = response.json()
-    json_data = json_data["result"]
+
+    response = []
+    while True:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    json_data = response["result"]
 
     # Extract the ratings from the JSON data, excluding None values
     ratings = [
@@ -160,7 +189,11 @@ def get_problems_data(handle):
 
 def get_blog_entries(handle):
     url = f"https://codeforces.com/api/user.blogEntries?handle={handle}"
-    response = requests.get(url)
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
 
     if response.status_code == 200:
         data = response.json()
@@ -172,9 +205,13 @@ def get_blog_entries(handle):
 
 def get_codeforces_submissions(handle):
     url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(url)
-    data = response.json()
-    data = data["result"]
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    data = response["result"]
 
     calendar_data = defaultdict(int)
 
@@ -188,7 +225,11 @@ def get_codeforces_submissions(handle):
 
 def get_user_tags(handle):
     url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(url)
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
     response = response.json()
     result = response["result"]
     tags_count = {}
@@ -205,7 +246,11 @@ def get_user_tags(handle):
 
 def get_user_stats(handle):
     url = f"https://codeforces.com/api/user.status?handle={handle}"
-    response = requests.get(url)
+    response = []
+    while True:
+        response = requests.get(url)
+        if response.status_code == 200:
+            break
     response = response.json()
 
     unique_problem_names = set()
@@ -253,8 +298,13 @@ def get_contest_stats(handle):
     api_url = f"https://codeforces.com/api/user.rating?handle={handle}"
 
     # Make API call and get JSON response
-    response = requests.get(api_url)
-    data = response.json()
+    response = []
+    while True:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            break
+    response = response.json()
+    data = response
 
     # Check if the API call was successful
     contests = data["result"]
