@@ -98,3 +98,17 @@ h1 {
     margin-bottom: 10px;
     display: inline-block;
 }
+
+.github-card {
+    text-align: center;
+  }
+  
+  .github-card a {
+    text-decoration: none;
+  }
+  
+  .github-card img {
+    width: 150px; /* Adjust the width as needed */
+    height: auto;
+  }
+  
