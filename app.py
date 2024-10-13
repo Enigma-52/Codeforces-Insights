@@ -294,6 +294,11 @@ def get_user_stats(handle):
     return result_list
 
 
+@app.route("/health")
+def healthcheck():
+    return "OK"
+
+
 def get_contest_stats(handle):
     api_url = f"https://codeforces.com/api/user.rating?handle={handle}"
 
